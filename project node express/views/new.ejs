@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div class="main h-screen w-full bg-zinc-500 flex items-center justify-center ">
+    <div class="form h-[80vh] w-[30vw] bg-zinc-700 p-4 rounded-md ">
+        <form action="/create" method="set" class=" flex flex-col p-2 gap-4">
+            <h2 class="text-lg font-semibold">title name</h2>
+            <input class=" p-2 text-lg font-semibold " type="text" placeholder="enter title" name="title" >
+            <h2 class="text-lg font-semibold"> discription </h2>
+            <textarea name="discription" class=" resize-none p-2 text-lg font-semibold " placeholder="enter discription "></textarea>
+            <button class=" px-4 py-2 bg-blue-500 rounded-md text-lg font-semibold "> submit </button>
+        </form>
+    </div>
+  </div>
+</body>
+</html>

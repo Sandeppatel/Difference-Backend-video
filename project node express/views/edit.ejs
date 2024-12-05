@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div
+      class="main h-screen w-full bg-zinc-500 flex items-center text-zinc-700 justify-center"
+    >
+      <div class="form h-[80vh] w-[30vw] bg-zinc-700 p-4 rounded-md">
+        <form action="/note-pade/<%= title %>" method="set" class="flex flex-col p-2 gap-4">
+          <h2 class="text-lg font-semibold">title name</h2>
+          <input
+            class="p-2 text-lg font-semibold"
+            type="text"
+            placeholder="enter title"
+            name="title"
+            value="<%= title %>"
+          />
+          <h2 class="text-lg font-semibold">discription</h2>
+          <input
+           type="text"
+          class="p-2 text-lg font-semibold"
+          name="discription"
+          placeholder="enter discription"
+          value="<%= discription %>"
+           />
+          <button
+            class="px-4 py-2 bg-yellow-500 rounded-md text-lg font-semibold"
+          >
+            Update
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

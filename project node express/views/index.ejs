@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div
+      class="main h-screen w-full bg-zinc-500 rounded-md p-10 text-white text-zinc-200"
+    >
+      <nav class="nav h-[10vh] flex items-center justify-between">
+        <div class="node">
+          <h1 class="text-2xl font-bold"><i>Node...</i></h1>
+        <h1 class="text-2xl font-bold"><i>Search</i></h1>
+        <input type="text" id="searchInput" onkeyup="searchCards()" placeholder="Search cards..." class="rounded-md p-2 text-zinc-700">
+        <script>
+          function searchCards() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const cards = document.getElementsByClassName('card');
+            
+            for (let i = 0; i < cards.length; i++) {
+              const title = cards[i].getElementsByTagName('h2')[0];
+              const txtValue = title.textContent || title.innerText;
+              if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                cards[i].style.display = "";
+              } else {
+                cards[i].style.display = "none";
+              }
+            }
+          }
+
+          searchCards() 
+        </script>
+      
+        </div>
+        <div class="flex items-center gap-4">
+          <select id="filterStatus" onchange="filterCards()" class="px-4 py-2 bg-zinc-700 rounded-md text-lg font-semibold">
+            <option value="all">All Tasks</option>
+            <option value="complete">Complete</option>
+            <option value="incomplete">Incomplete</option>
+          </select>
+          <a
+            class="px-4 py-2 bg-blue-500 rounded-md text-lg font-semibold"
+            href="/new"
+          >
+            new page
+          </a>
+        </div>
+      </nav>
+      <div class="cards h-[90vh]  p-10 flex-wrap flex gap-4 w-full mt-4">
+        <% file.forEach(file=>{ %>
+
+        <div
+          class="card h-[28vh] w-[28vw] bg-zinc-600 rounded-md flex flex-col justify-between p-2"
+          data-status="incomplete"
+        >
+          <h2 class="text-lg font-semibold"><%= file %></h2>
+
+       <div class="card">
+        <div class="task-details flex  gap-2 ">
+       
+          <div class="tast flex gap-2">
+            <a
+              class="px-2 py-1 bg-blue-500 rounded-md font-semibold"
+              href="/show/<%= file %>"
+            >
+              show
+            </a>
+
+            <select class="px-2 py-1 bg-zinc-700 rounded-md font-semibold text-white" name="priority">
+              <option value="low">Low Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+
+            <button
+              class="px-2 py-1 bg-green-500 rounded-md font-semibold complete-btn"
+              onclick="toggleComplete(this)"
+            >
+              Complete
+            </button>
+          </div>
+          <div class="icon flex gap-4">
+            <a class="text-red-500" href="/delete/<%= file %>">delete</a>
+            <a class="text-green-500" href="/edit/<%= file %>">edit</a>
+          </div>
+          
+        </div>
+        
+        <div class="date-time mt-2 flex items-center gap-2">
+          <input 
+            type="datetime-local" 
+            class="px-2 py-1 bg-zinc-700 rounded-md text-white"
+            name="dueDate"
+          >
+          <button
+            class="px-2 py-1 bg-purple-500 rounded-md font-semibold text-sm"
+            onclick="setReminder(this)"
+          >
+            Set Reminder
+          </button>
+        </div>
+
+       </div>
+       
+        </div>
+
+        <% }) %>
+      </div>
+    </div>
+
+    <script>
+      function toggleComplete(btn) {
+        const card = btn.closest('.card');
+        if (card.dataset.status === 'incomplete') {
+          card.dataset.status = 'complete';
+          btn.textContent = 'Incomplete';
+          btn.classList.remove('bg-green-500');
+          btn.classList.add('bg-yellow-500');
+          card.style.opacity = '0.7';
+        } else {
+          card.dataset.status = 'incomplete';
+          btn.textContent = 'Complete';
+          btn.classList.remove('bg-yellow-500');
+          btn.classList.add('bg-green-500');
+          card.style.opacity = '1';
+        }
+      }
+
+      function filterCards() {
+        const status = document.getElementById('filterStatus').value;
+        const cards = document.getElementsByClassName('card');
+        
+        for (let card of cards) {
+          if (status === 'all' || card.dataset.status === status) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        }
+      }
+
+      function setReminder(btn) {
+        const card = btn.closest('.card');
+        const dueDate = card.querySelector('input[name="dueDate"]').value;
+        
+        if (!dueDate) {
+          alert('Please select a due date first');
+          return;
+        }
+
+        fetch('/set-reminder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            taskId: card.querySelector('h2').textContent,
+            dueDate: dueDate
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert('Reminder set successfully!');
+        })
+        .catch(error => {
+          alert('Failed to set reminder');
+        });
+      }
+    </script>
+    
+  </body>
+</html>
