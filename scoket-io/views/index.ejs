@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-10">
+    <div class="constain w-[60vh] p-2 ">
+        <div class="card border-2 border-zinc-400 h-[20vh] w-full rounded-md p-2 overflow-y-auto">
+            <!-- Messages will appear here -->
+        </div>
+        <input class="py-2 px-3 rounded-md border-2 mt-2 border-zinc-400 w-full" type="text" placeholder="Enter message">
+        <button class="py-2 px-3 bg-blue-500 rounded-md text-white mt-2">Send Message</button>
+    </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io(); // Initialize socket connection
+  
+  const input = document.querySelector("input");
+  const button = document.querySelector("button");
+  const card = document.querySelector(".card");
+
+  // Event Listener for the Send Button
+  button.addEventListener("click", () => {
+      const message = input.value.trim();
+      if (message) {
+          socket.emit('message', message); // Emit 'message' event to the server
+          input.value = ""; // Clear input field
+      }
+  });
+
+  // Listen for Messages from the Server
+  socket.on("message", (msg) => {
+      const messageElement = document.createElement("div");
+      messageElement.textContent = msg;
+      messageElement.className = "text-xl bg-blue-100 rounded-md p-2 mt-1";
+      card.appendChild(messageElement);
+  });
+</script>
+
+</body>
+</html>
